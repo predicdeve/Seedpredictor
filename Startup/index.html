@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>APK Store - Buy APKs with Crypto</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      header {
+        background-color: #2c3e50;
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      .tagline {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #2c3e50;
+      }
+
+      .apk-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+
+      .apk-card {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .apk-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .apk-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+      }
+
+      .apk-info {
+        padding: 1.5rem;
+      }
+
+      .apk-title {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .apk-description {
+        color: #666;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .apk-price {
+        font-weight: bold;
+        color: #2c3e50;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+      }
+
+      .buy-btn {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 0.7rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+
+      .buy-btn:hover {
+        background-color: #2980b9;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        max-width: 90%;
+        max-height: 90%;
+        overflow: auto;
+        position: relative;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: #666;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem;
+        background-color: #2c3e50;
+        color: white;
+        margin-top: 3rem;
+      }
+
+      @media (max-width: 768px) {
+        .apk-grid {
+          grid-template-columns: 1fr;
+        }
+
+        header {
+          flex-direction: column;
+          text-align: center;
+          gap: 0.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">APK Store</div>
+      <div class="tagline">
+        Buy gambling hacks instantly with cryptocurrency - No login required
+      </div>
+    </header>
+
+    <main>
+      <h1>Casino Game Predictors</h1>
+
+      <div class="apk-grid">
+        <!-- APK Card 1 -->
+        <div class="apk-card">
+          <img
+            src="copy.jpg"
+            alt="APK 1"
+            class="apk-image"
+          />
+          <div class="apk-info">
+            <h3 class="apk-title">Crash or Aviator Predictor</h3>
+            <p class="apk-description">v.2.03 (Stable)</p>
+            <div class="apk-price">$10.49</div>
+            <button
+              class="buy-btn"
+              data-price="10.49"
+              data-name="Crash or Aviator Predictor"
+            >
+              Buy Now
+            </button>
+          </div>
+        </div>
+
+        <!-- APK Card 2 -->
+        <div class="apk-card">
+          <img
+            src="copy2.jpg"
+            alt="APK 2"
+            class="apk-image"
+          />
+          <div class="apk-info">
+            <h3 class="apk-title">Mine Predictor</h3>
+            <p class="apk-description">v.8.09</p>
+            <div class="apk-price">$10.49</div>
+            <button
+              class="buy-btn"
+              data-price="10.49"
+              data-name="Mine Predictor"
+            >
+              Buy Now
+            </button>
+          </div>
+        </div>
+
+        <!-- APK Card 3 -->
+        <div class="apk-card">
+          <img
+            src="copy3.jpg"
+            alt="APK 3"
+            class="apk-image"
+          />
+          <div class="apk-info">
+            <h3 class="apk-title">Limbo Seed Coder</h3>
+            <p class="apk-description">v.12.9</p>
+            <div class="apk-price">$10.49</div>
+            <button
+              class="buy-btn"
+              data-price="10.49"
+              data-name="Limbo Seed Coder"
+            >
+              Buy Now
+            </button>
+          </div>
+        </div>
+
+      
+        
+        </div>
+      </div>
+    </main>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+      <div class="modal-content">
+        <button class="close-btn" id="closeModal">&times;</button>
+        <h2>Complete Your Purchase</h2>
+        <p>
+          You're purchasing: <span id="purchaseName"></span> for $<span
+            id="purchasePrice"
+          ></span>
+        </p>
+        <p>Pay with cryptocurrency using the widget below:</p>
+
+        <!-- NowPayments Widget -->
+        <iframe
+          id="paymentWidget"
+          src=""
+          width="410"
+          height="696"
+          frameborder="0"
+          scrolling="no"
+          style="overflow-y: hidden"
+        >
+          Can't load widget
+        </iframe>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2023 APK Store. All rights reserved.</p>
+      <p>Instant APK delivery after payment confirmation.</p>
+    </footer>
+
+    <script>
+      // Get DOM elements
+      const buyButtons = document.querySelectorAll(".buy-btn");
+      const paymentModal = document.getElementById("paymentModal");
+      const closeModal = document.getElementById("closeModal");
+      const purchaseName = document.getElementById("purchaseName");
+      const purchasePrice = document.getElementById("purchasePrice");
+      const paymentWidget = document.getElementById("paymentWidget");
+
+      // Add click event to all buy buttons
+      buyButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const price = button.getAttribute("data-price");
+          const name = button.getAttribute("data-name");
+
+          // Update modal with product info
+          purchaseName.textContent = name;
+          purchasePrice.textContent = price;
+
+          // Update iframe src with price parameter
+          paymentWidget.src = `https://nowpayments.io/embeds/payment-widget?iid=4573488885&amount=${price}&currency=usd`;
+
+          // Show modal
+          paymentModal.style.display = "flex";
+        });
+      });
+
+      // Close modal when X is clicked
+      closeModal.addEventListener("click", () => {
+        paymentModal.style.display = "none";
+        paymentWidget.src = "";
+      });
+
+      // Close modal when clicking outside
+      window.addEventListener("click", (e) => {
+        if (e.target === paymentModal) {
+          paymentModal.style.display = "none";
+          paymentWidget.src = "";
+        }
+      });
+    </script>
+  </body>
+</html>
