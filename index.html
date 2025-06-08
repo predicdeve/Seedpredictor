@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>APK Store - Instant Downloads</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #6c5ce7;
+        --primary-dark: #5649c0;
+        --secondary: #00cec9;
+        --success: #00b894;
+        --danger: #d63031;
+        --warning: #fdcb6e;
+        --dark: #2d3436;
+        --light: #f5f6fa;
+        --gray: #dfe6e9;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--light);
+        color: var(--dark);
+        line-height: 1.6;
+      }
+
+      header {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: white;
+        padding: 2rem 1rem;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
+
+      header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary);
+        position: relative;
+        padding-bottom: 0.5rem;
+      }
+
+      .section-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background-color: var(--secondary);
+      }
+
+      .apk-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
+
+      .apk-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        border: 1px solid var(--gray);
+      }
+
+      .apk-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .apk-image {
+        height: 180px;
+        background-color: var(--gray);
+        background-size: cover;
+        background-position: center;
+        position: relative;
+      }
+
+      .apk-image::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.1),
+          rgba(0, 0, 0, 0.3)
+        );
+      }
+
+      .apk-details {
+        padding: 1.5rem;
+      }
+
+      .apk-title {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .apk-description {
+        color: #666;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+      }
+
+      .apk-price {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.4rem;
+        margin: 0.5rem 0;
+      }
+
+      .buy-btn {
+        display: block;
+        width: 100%;
+        padding: 0.8rem;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: all 0.3s;
+        text-align: center;
+      }
+
+      .buy-btn:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .buy-btn:active {
+        transform: translateY(0);
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .modal.show {
+        opacity: 1;
+        display: flex;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        width: 95%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transform: translateY(20px);
+        transition: transform 0.3s;
+      }
+
+      .modal.show .modal-content {
+        transform: translateY(0);
+      }
+
+      .close-btn {
+        float: right;
+        font-size: 1.8rem;
+        cursor: pointer;
+        color: #666;
+        transition: color 0.2s;
+        line-height: 1;
+      }
+
+      .close-btn:hover {
+        color: var(--danger);
+      }
+
+      .modal-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary);
+      }
+
+      .modal-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        color: #555;
+      }
+
+      /* Payment Methods */
+      .payment-methods {
+        margin: 1.5rem 0;
+      }
+
+      .payment-method {
+        margin-bottom: 1rem;
+        padding: 1.2rem;
+        border: 1px solid var(--gray);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .payment-method:hover {
+        border-color: var(--primary);
+      }
+
+      .payment-method.selected {
+        border-color: var(--primary);
+        background-color: rgba(108, 92, 231, 0.05);
+      }
+
+      .payment-method h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+        color: var(--dark);
+      }
+
+      .payment-method p {
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      /* Payment Details */
+      .payment-details {
+        display: none;
+        margin-top: 1.5rem;
+        padding: 1.5rem;
+        background-color: var(--light);
+        border-radius: 8px;
+        border: 1px solid var(--gray);
+      }
+
+      .payment-details.active {
+        display: block;
+      }
+
+      .verification-steps {
+        margin: 1rem 0;
+      }
+
+      .step {
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .step-number {
+        display: inline-flex;
+        width: 26px;
+        height: 26px;
+        background-color: var(--primary);
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 26px;
+        margin-right: 0.8rem;
+        flex-shrink: 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .step.completed .step-number {
+        background-color: var(--success);
+      }
+
+      .step-content {
+        flex: 1;
+      }
+
+      .step-title {
+        font-weight: 500;
+        margin-bottom: 0.3rem;
+      }
+
+      .step-description {
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      /* QR Code */
+      .qr-container {
+        text-align: center;
+        margin: 1.5rem 0;
+      }
+
+      .qr-code {
+        width: 180px;
+        height: 180px;
+        background-color: white;
+        margin: 0 auto;
+        padding: 10px;
+        border: 1px solid var(--gray);
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #666;
+        font-size: 0.8rem;
+      }
+
+      .qr-code img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      /* Address Display */
+      .address-display {
+        background-color: white;
+        padding: 0.8rem;
+        border-radius: 6px;
+        border: 1px solid var(--gray);
+        margin: 1rem 0;
+        word-break: break-all;
+        font-family: monospace;
+        font-size: 0.9rem;
+        position: relative;
+      }
+
+      .copy-btn {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+
+      .copy-btn:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .copy-btn:active {
+        transform: scale(0.98);
+      }
+
+      /* Form Elements */
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #555;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--gray);
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-block;
+        padding: 0.8rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: none;
+        font-size: 1rem;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .btn-success {
+        background-color: var(--success);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background-color: #00a884;
+      }
+
+      .btn-info {
+        background-color: var(--secondary);
+        color: white;
+      }
+
+      .btn-info:hover {
+        background-color: #00b5b2;
+      }
+
+      /* Status Messages */
+      .status-message {
+        padding: 0.8rem;
+        margin: 1rem 0;
+        border-radius: 6px;
+        display: none;
+        font-size: 0.95rem;
+      }
+
+      .status-success {
+        background-color: rgba(0, 184, 148, 0.1);
+        color: var(--success);
+        border: 1px solid rgba(0, 184, 148, 0.3);
+      }
+
+      .status-error {
+        background-color: rgba(214, 48, 49, 0.1);
+        color: var(--danger);
+        border: 1px solid rgba(214, 48, 49, 0.3);
+      }
+
+      .status-info {
+        background-color: rgba(0, 206, 201, 0.1);
+        color: var(--secondary);
+        border: 1px solid rgba(0, 206, 201, 0.3);
+      }
+
+      /* Loader */
+      .loader {
+        border: 3px solid rgba(0, 206, 201, 0.2);
+        border-radius: 50%;
+        border-top: 3px solid var(--secondary);
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+        margin-left: auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Download Section */
+      .download-section {
+        display: none;
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background-color: rgba(0, 184, 148, 0.1);
+        border-radius: 8px;
+        border: 1px solid rgba(0, 184, 148, 0.3);
+        text-align: center;
+      }
+
+      .download-section h3 {
+        color: var(--success);
+        margin-bottom: 1rem;
+      }
+
+      .download-btn {
+        display: inline-block;
+        padding: 0.8rem 2rem;
+        background-color: var(--success);
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        margin: 1rem 0;
+        transition: all 0.3s;
+      }
+
+      .download-btn:hover {
+        background-color: #00a884;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 184, 148, 0.3);
+      }
+
+      .transaction-id {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 1rem;
+        font-family: monospace;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 2rem 1rem;
+        background-color: var(--dark);
+        color: white;
+        margin-top: 3rem;
+      }
+
+      footer p {
+        margin-bottom: 0.5rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .apk-list {
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+
+        header h1 {
+          font-size: 2rem;
+        }
+
+        .modal-content {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>APK Store</h1>
+      <p>Instant downloads - No registration required</p>
+    </header>
+
+    <div class="container">
+      <h2 class="section-title">Popular APKs</h2>
+      <div class="apk-list">
+        <!-- APK Card 1 -->
+        <div class="apk-card">
+          <div
+            class="apk-image"
+            style="background-image: url('https://via.placeholder.com/300x200')"
+          ></div>
+          <div class="apk-details">
+            <h3 class="apk-title">Crash or Aviator Predictor</h3>
+            <p class="apk-description">v2.3</p>
+            <p class="apk-price">₹441</p>
+            <button
+              class="buy-btn"
+              onclick="openPaymentModal('Premium App 1', 5.35, 'premium-app-1')"
+            >
+              Buy Now
+            </button>
+          </div>
+        </div>
+
+        <!-- APK Card 2 -->
+        <div class="apk-card">
+          <div
+            class="apk-image"
+            style="background-image: url('https://via.placeholder.com/300x200')"
+          ></div>
+          <div class="apk-details">
+            <h3 class="apk-title">Mine Predictor</h3>
+            <p class="apk-description">v8.9.09</p>
+            <p class="apk-price">₹578</p>
+            <button
+              class="buy-btn"
+              onclick="openPaymentModal('Game Mod APK', 7, 'game-mod')"
+            >
+              Buy Now
+            </button>
+          </div>
+        </div>
+
+        <!-- APK Card 3 -->
+        <div class="apk-card">
+          <div
+            class="apk-image"
+            style="background-image: url('https://via.placeholder.com/300x200')"
+          ></div>
+          <div class="apk-details">
+            <h3 class="apk-title">Limbo Hash coder</h3>
+            <p class="apk-description">v3.1 (Stable)</p>
+            <p class="apk-price">₹908</p>
+            <button
+              class="buy-btn"
+              onclick="openPaymentModal('Utility Tool Pro', 11, 'utility-pro')"
+            >
+              Buy Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2 class="modal-title">Purchase <span id="apkName"></span></h2>
+        <p class="modal-subtitle">Price: $<span id="apkPrice"></span></p>
+
+        <h3>Select Payment Method</h3>
+
+        <div class="payment-methods">
+          <!-- Cryptocurrency Payment -->
+          <div class="payment-method" onclick="selectPaymentMethod('crypto')">
+            <h4>Cryptocurrency</h4>
+            <p>Pay with BTC</p>
+            <div id="cryptoDetails" class="payment-details">
+              <div class="verification-steps">
+                <div class="step" id="cryptoStep1">
+                  <span class="step-number">1</span>
+                  <div class="step-content">
+                    <div class="step-title">
+                      Send
+                      <strong><span id="cryptoAmount"></span> BTC</strong> to
+                      our wallet
+                    </div>
+                    <div class="step-description">Use the address</div>
+                  </div>
+                </div>
+
+                <div class="qr-container">
+                  <div class="qr-code">BTC Payment QR Code</div>
+                  <div class="address-display" id="cryptoAddress">
+                    1PRCVNMdhDy3Pc87QUe1425bmttcT3eoXp
+                  </div>
+                  <button
+                    class="copy-btn"
+                    onclick="copyToClipboard('cryptoAddress')"
+                  >
+                    Copy Address
+                  </button>
+                </div>
+
+                <div class="step" id="cryptoStep2">
+                  <span class="step-number">2</span>
+                  <div class="step-content">
+                    <div class="step-title">
+                      Waiting for payment confirmation
+                    </div>
+                    <div class="step-description">
+                      This may take 10-30 minutes
+                    </div>
+                  </div>
+                  <div class="loader" style="display: none"></div>
+                </div>
+
+                <div class="step" id="cryptoStep3">
+                  <span class="step-number">3</span>
+                  <div class="step-content">
+                    <div class="step-title">Complete your purchase</div>
+                    <div class="step-description">Download your APK file</div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="cryptoStatus" class="status-message"></div>
+              <button
+                class="btn btn-primary"
+                onclick="checkCryptoPayment()"
+                id="cryptoCheckBtn"
+              >
+                I've Sent Payment
+              </button>
+              <p style="font-size: 0.9rem; margin-top: 1rem; color: #666">
+                Transaction typically confirms within 10-30 minutes. You can
+                close this page and return later.
+              </p>
+            </div>
+          </div>
+
+          <!-- UPI Payment -->
+          <div class="payment-method" onclick="selectPaymentMethod('upi')">
+            <h4>UPI Payment</h4>
+            <p>Pay instantly via UPI (India)</p>
+            <div id="upiDetails" class="payment-details">
+              <div class="verification-steps">
+                <div class="step" id="upiStep1">
+                  <span class="step-number">1</span>
+                  <div class="step-content">
+                    <div class="step-title">
+                      Send <strong>₹<span id="upiAmount"></span></strong> to our
+                      UPI ID
+                    </div>
+                    <div class="step-description">
+                      Use the UPI ID or QR code below
+                    </div>
+                  </div>
+                </div>
+
+                <div class="qr-container">
+                  <div class="qr-code">UPI Payment QR Code</div>
+                  <div class="address-display" id="upiId">nathavat@fam</div>
+                  <button class="copy-btn" onclick="copyToClipboard('upiId')">
+                    Copy UPI ID
+                  </button>
+                </div>
+
+                <div class="step" id="upiStep2">
+                  <span class="step-number">2</span>
+                  <div class="step-content">
+                    <div class="step-title">Verify your payment</div>
+                    <div class="step-description">
+                      Enter your UTR number below
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="utrNumber"
+                    >UTR (Transaction Reference Number)</label
+                  >
+                  <input
+                    type="text"
+                    id="utrNumber"
+                    class="form-control"
+                    placeholder="12-digit UTR number"
+                    maxlength="12"
+                  />
+                  <small style="color: #666"
+                    >Found in your payment confirmation</small
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="paymentProof"
+                    >Payment Screenshot (Optional)</label
+                  >
+                  <input
+                    type="file"
+                    id="paymentProof"
+                    class="form-control"
+                    accept="image/*"
+                  />
+                </div>
+
+                <button class="btn btn-primary" onclick="verifyUPIPayment()">
+                  Verify Payment
+                </button>
+
+                <div class="step" id="upiStep3">
+                  <span class="step-number">3</span>
+                  <div class="step-content">
+                    <div class="step-title">Complete your purchase</div>
+                    <div class="step-description">Download your APK file</div>
+                  </div>
+                  <div class="loader" style="display: none"></div>
+                </div>
+              </div>
+
+              <div id="upiStatus" class="status-message"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="downloadSection" class="download-section">
+          <h3>Thank you for your purchase!</h3>
+          <p>Verify payment with live agent</p>
+          <a
+            id="downloadLink"
+            href="https://t.me/verifywithin30min"
+            class="download-btn"
+            download
+            >click on go for original file</a
+          >
+          <a href="https://t.me/verifywithin30min">go</a>
+          <p class="transaction-id">
+            Transaction ID: <span id="transactionId"></span>
+          </p>
+          <p><small>The download link will expire in 24 hours.</small></p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2023 APK Store. All rights reserved.</p>
+      <p>Contact: support@apkstore.example.com</p>
+    </footer>
+
+    <script>
+      // Current selected APK details
+      let currentApk = {
+        name: "",
+        price: 0,
+        id: "",
+        transactionId: "",
+      };
+
+      // Conversion rates (you would get these from an API in a real implementation)
+      const btcRate = 0.0000058; // Example: $1 = 0.0000058 BTC
+      const usdToInr = 82.5; // Example conversion rate
+
+      // Simulated database of transactions (in a real app, this would be server-side)
+      const transactions = {};
+      const pendingPayments = {};
+
+      function generateTransactionId() {
+        return (
+          "txn_" +
+          Math.random().toString(36).substr(2, 9) +
+          "_" +
+          Date.now().toString(36)
+        );
+      }
+
+      function openPaymentModal(name, price, id) {
+        currentApk = {
+          name: name,
+          price: price,
+          id: id,
+          transactionId: generateTransactionId(),
+        };
+
+        // Update modal content
+        document.getElementById("apkName").textContent = name;
+        document.getElementById("apkPrice").textContent = price.toFixed(2);
+
+        // Calculate crypto amount
+        const btcAmount = price * btcRate;
+        document.getElementById("cryptoAmount").textContent =
+          btcAmount.toFixed(8);
+
+        // Calculate INR amount
+        const inrAmount = price * usdToInr;
+        document.getElementById("upiAmount").textContent =
+          Math.round(inrAmount);
+
+        // Reset UI
+        document.getElementById("downloadSection").style.display = "none";
+        document
+          .querySelectorAll(".payment-details")
+          .forEach((el) => el.classList.remove("active"));
+        document
+          .querySelectorAll(".payment-method")
+          .forEach((el) => el.classList.remove("selected"));
+        document.getElementById("upiStatus").style.display = "none";
+        document.getElementById("cryptoStatus").style.display = "none";
+        document.getElementById("utrNumber").value = "";
+        document.getElementById("paymentProof").value = "";
+
+        // Reset step indicators
+        document.querySelectorAll(".step").forEach((step) => {
+          step.classList.remove("completed");
+        });
+
+        document.querySelectorAll(".loader").forEach((loader) => {
+          loader.style.display = "none";
+        });
+
+        // Enable check button
+        const checkBtn = document.getElementById("cryptoCheckBtn");
+        if (checkBtn) {
+          checkBtn.disabled = false;
+          checkBtn.textContent = "I've Sent Payment";
+          checkBtn.onclick = function () {
+            checkCryptoPayment();
+          };
+        }
+
+        // Show modal with animation
+        const modal = document.getElementById("paymentModal");
+        modal.style.display = "flex";
+        setTimeout(() => {
+          modal.classList.add("show");
+        }, 10);
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("paymentModal");
+        modal.classList.remove("show");
+        setTimeout(() => {
+          modal.style.display = "none";
+        }, 300);
+      }
+
+      function selectPaymentMethod(method) {
+        // Reset all payment details
+        document
+          .querySelectorAll(".payment-details")
+          .forEach((el) => el.classList.remove("active"));
+        document
+          .querySelectorAll(".payment-method")
+          .forEach((el) => el.classList.remove("selected"));
+
+        // Activate selected method
+        document.getElementById(method + "Details").classList.add("active");
+        document
+          .querySelector(
+            `.payment-method[onclick="selectPaymentMethod('${method}')"]`
+          )
+          .classList.add("selected");
+      }
+
+      function copyToClipboard(elementId) {
+        const text = document.getElementById(elementId).textContent;
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            // Show temporary feedback
+            const originalText = event.target.textContent;
+            event.target.textContent = "Copied!";
+            event.target.style.backgroundColor = "#00b894";
+            setTimeout(() => {
+              event.target.textContent = originalText;
+              event.target.style.backgroundColor = "";
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("Failed to copy: ", err);
+          });
+      }
+
+      function verifyUPIPayment() {
+        const utrNumber = document.getElementById("utrNumber").value.trim();
+        const fileInput = document.getElementById("paymentProof");
+        const statusElement = document.getElementById("upiStatus");
+        const upiStep2 = document.getElementById("upiStep2");
+        const upiStep3 = document.getElementById("upiStep3");
+        const loader = upiStep3.querySelector(".loader");
+
+        // Basic validation
+        if (!utrNumber) {
+          showStatus(statusElement, "Please enter UTR number", "error");
+          return;
+        }
+
+        if (utrNumber.length !== 12 || !/^\d+$/.test(utrNumber)) {
+          showStatus(
+            statusElement,
+            "Please enter a valid 12-digit UTR number",
+            "error"
+          );
+          return;
+        }
+
+        // Show verifying status
+        showStatus(statusElement, "Verifying UPI payment...", "info");
+        upiStep2.classList.add("completed");
+        loader.style.display = "block";
+
+        // Store the pending verification
+        pendingPayments[currentApk.transactionId] = {
+          type: "upi",
+          utr: utrNumber,
+          timestamp: Date.now(),
+          verified: false,
+        };
+
+        // Simulate API check with 3 attempts
+        let attempts = 0;
+        const maxAttempts = 3;
+
+        const checkInterval = setInterval(() => {
+          attempts++;
+
+          // Simulate different verification scenarios
+          const scenario = Math.random();
+          const progress = Math.min(1, attempts / maxAttempts);
+
+          if (scenario < 0.5 + progress * 0.4 || attempts >= maxAttempts) {
+            // Successful verification (increasing chance with attempts)
+            clearInterval(checkInterval);
+            loader.style.display = "none";
+            upiStep3.classList.add("completed");
+
+            pendingPayments[currentApk.transactionId].verified = true;
+            pendingPayments[currentApk.transactionId].verifiedAt = Date.now();
+
+            // Store the transaction
+            transactions[currentApk.transactionId] = {
+              ...currentApk,
+              paymentMethod: "UPI",
+              utrNumber: utrNumber,
+              paymentProof:
+                fileInput.files.length > 0
+                  ? URL.createObjectURL(fileInput.files[0])
+                  : null,
+              paymentVerified: true,
+              verifiedAt: new Date().toISOString(),
+            };
+
+            showStatus(
+              statusElement,
+              "Payment verified successfully!",
+              "success"
+            );
+            showDownloadLink();
+          } else if (scenario < 0.8) {
+            // Still pending
+            showStatus(
+              statusElement,
+              `Verifying payment (attempt ${attempts}/${maxAttempts})...`,
+              "info"
+            );
+          } else {
+            // Failed verification (20% chance)
+            clearInterval(checkInterval);
+            loader.style.display = "none";
+            showStatus(
+              statusElement,
+              "Payment verification failed. Please check your UTR number or try again later.",
+              "error"
+            );
+          }
+        }, 2000);
+      }
+
+      function checkCryptoPayment() {
+        const statusElement = document.getElementById("cryptoStatus");
+        const cryptoStep2 = document.getElementById("cryptoStep2");
+        const cryptoStep3 = document.getElementById("cryptoStep3");
+        const loader = cryptoStep2.querySelector(".loader");
+        const checkBtn = document.getElementById("cryptoCheckBtn");
+
+        // Show checking status
+        checkBtn.disabled = true;
+        showStatus(statusElement, "Checking blockchain for payment...", "info");
+        loader.style.display = "block";
+
+        // Store the pending verification
+        pendingPayments[currentApk.transactionId] = {
+          type: "crypto",
+          timestamp: Date.now(),
+          verified: false,
+        };
+
+        // Simulate blockchain check with 5 attempts
+        let attempts = 0;
+        const maxAttempts = 5;
+
+        const checkInterval = setInterval(() => {
+          attempts++;
+
+          // Simulate different verification scenarios
+          const scenario = Math.random();
+          const progress = Math.min(1, attempts / maxAttempts);
+
+          if (scenario < 0.3 + progress * 0.5 || attempts >= maxAttempts) {
+            // Successful verification (increasing chance with attempts)
+            clearInterval(checkInterval);
+            loader.style.display = "none";
+            cryptoStep2.classList.add("completed");
+            cryptoStep3.classList.add("completed");
+
+            pendingPayments[currentApk.transactionId].verified = true;
+            pendingPayments[currentApk.transactionId].verifiedAt = Date.now();
+
+            // Store the transaction
+            transactions[currentApk.transactionId] = {
+              ...currentApk,
+              paymentMethod: "Crypto",
+              paymentVerified: true,
+              verifiedAt: new Date().toISOString(),
+            };
+
+            showStatus(
+              statusElement,
+              "Payment received! Thank you!",
+              "success"
+            );
+            showDownloadLink();
+          } else {
+            // Still pending
+            showStatus(
+              statusElement,
+              `Checking blockchain (attempt ${attempts}/${maxAttempts})...`,
+              "info"
+            );
+
+            // On last attempt, offer alternative
+            if (attempts >= maxAttempts) {
+              checkBtn.textContent = "Still having trouble? Contact Support";
+              checkBtn.onclick = () => {
+                alert(
+                  "Please email support@apkstore.example.com with this transaction ID: " +
+                    currentApk.transactionId
+                );
+              };
+            }
+          }
+
+          // Re-enable button if not verified
+          if (
+            !pendingPayments[currentApk.transactionId].verified &&
+            attempts < maxAttempts
+          ) {
+            checkBtn.disabled = false;
+          }
+        }, 3000);
+      }
+
+      function showDownloadLink() {
+        // In a real implementation, this would be the actual APK download link
+        // For demo purposes, we'll create a dummy file
+        const apkContent = `This is a simulated APK file for ${
+          currentApk.name
+        }. 
+            Transaction ID: ${currentApk.transactionId}
+            Price: $${currentApk.price}
+            Date: ${new Date().toISOString()}`;
+
+        const blob = new Blob([apkContent], {
+          type: "application/vnd.android.package-archive",
+        });
+        const url = URL.createObjectURL(blob);
+
+        document.getElementById("downloadLink").href = url;
+        document.getElementById(
+          "downloadLink"
+        ).download = `${currentApk.id}.apk`;
+        document.getElementById("transactionId").textContent =
+          currentApk.transactionId;
+        document.getElementById("downloadSection").style.display = "block";
+
+        // Scroll to download section
+        document
+          .getElementById("downloadSection")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+
+      function showStatus(element, message, type) {
+        element.textContent = message;
+        element.className = "status-message status-" + type;
+        element.style.display = "block";
+        element.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      // Close modal if clicked outside
+      window.onclick = function (event) {
+        if (event.target === document.getElementById("paymentModal")) {
+          closeModal();
+        }
+      };
+
+      // Close modal with Escape key
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeModal();
+        }
+      });
+    </script>
+  </body>
+</html>
